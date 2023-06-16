@@ -4,6 +4,7 @@ import { Home } from "./Pages/Home";
 import { NavBar } from "./components/NavBar";
 import { Footer } from "./components/Footer";
 import { Schoolinfo } from "./Pages/school";
+import { LoginPage } from "./Pages/Login";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/" element={<Home/>} />
           <Route path="/Faculty" element={<Faculty />} />
           <Route path="/school" element={<Schoolinfo/>} />
+          <Route path="/Login" element={<LoginPage/>}/>
           </Routes>
         <Footer />
       </div>

@@ -1,38 +1,63 @@
-import { useState } from 'react';
-import axios from 'axios';
-import './Style.css';
+import React, { useState } from "react";
+import Container from "react-bootstrap/Container";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import axios from "axios";
 
-export const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+export const LoginPage = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleSubmit = () => {
-    if (password.length === 0) {
-      alert("Password has been left blank!");
-    } else if (email.length === 0) {
-      alert("Email has been left blank!");
-    } else {
-      const url = 'http://localhost/api.php';
-      let fData = new FormData();
-      fData.append('email', email);
-      fData.append('password', password);
-      axios.post(url, fData)
-        .then(response => alert(response.data))
-        .catch(error => alert(error));
-    }
-  }
+  const handleLogin = (event) => {
+    event.preventDefault();
+  
+    // Perform the login logic using Axios
+    axios
+      .post("/lms/api.php", { email, password })
+      .then((response) => {
+        const { success } = response.data;
+        if (success) {
+          // Login successful, redirect to homepage or admin page
+          window.location.href = "/"; // Replace "/" with the desired redirect path
+        } else {
+          // Login failed, handle the error or show an error message
+          console.log("Login failed");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+  
 
   return (
-    <>
-      <div className='container'>
-        <label htmlFor="email">Email</label>
-        <input type="email" name="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <label htmlFor="password">Password</label>
-        <input type="password" name="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        <input type="button" name="submit" id="submit" value="SEND" onClick={handleSubmit} />
-      </div>
-    </>
+    <Container>
+      <h1>Login</h1>
+      <Form onSubmit={handleLogin} method="POST">
+        <Form.Group controlId="email">
+          <Form.Label>Email</Form.Label>
+          <Form.Control
+            type="email"
+            placeholder="Enter email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </Form.Group>
+        <Form.Group controlId="password">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Enter password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </Form.Group>
+        <Button variant="primary" type="submit">
+          Login
+        </Button>
+      </Form>
+    </Container>
   );
-}
-
-export default Login;
+};

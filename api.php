@@ -2,7 +2,7 @@
 // Database configuration
 $host = 'localhost';
 $username = 'root';
-$password = '@@021';
+$password = 'p@rs@nt@021';
 $database = 'theory';
 
 // Connect to MySQL server
@@ -13,26 +13,32 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Rest of the code goes here
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    // Perform user authentication
-    $sql = "SELECT * FROM user WHERE email = '$email' AND password = '$password'";
-    $result = $conn->query($sql);
+    // Prepare the statement
+    $stmt = $conn->prepare("SELECT * FROM user WHERE email = ? AND password = ?");
+    $stmt->bind_param("ss", $email, $password);
+
+    // Execute the statement
+    $stmt->execute();
+
+    // Store the result
+    $result = $stmt->get_result();
 
     if ($result && $result->num_rows > 0) {
-        // Login successful
         echo "Login successful";
     } else {
-        // Login failed
         echo "Login failed";
     }
+
+    // Close the statement
+    $stmt->close();
 } else {
-    // Invalid request method
     echo "Invalid request method";
 }
 
+// Close the connection
 $conn->close();
 ?>
